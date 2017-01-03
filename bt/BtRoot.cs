@@ -1,17 +1,19 @@
 ﻿namespace bt
 {
-    public class BtRoot<T, U>
+    public class BtRoot<T, U, V> where V : new()
     {
-        private INode<T, U> rootNode;
+        private INode<T, U, V> rootNode;
 
-        public void Init(INode<T, U> _rootNode)
+        public void Init(INode<T, U, V> _rootNode)
         {
             rootNode = _rootNode;
         }
 
         public void Enter(T _t, U _u)
         {
-            rootNode.Enter(_t, _u);
+            V v = new V();
+
+            rootNode.Enter(_t, _u, v);
         }
     }
 }

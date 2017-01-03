@@ -1,14 +1,12 @@
-﻿using System.Collections.Generic;
-
-namespace bt
+﻿namespace bt
 {
-    public class SequenceNode<T, U> : CompositeNode<T, U>
+    public class SequenceNode<T, U, V> : CompositeNode<T, U, V> where V : new()
     {
-        public override bool Enter(T _t, U _u)
+        public override bool Enter(T _t, U _u, V _v)
         {
             for (int i = 0; i < children.Count; i++)
             {
-                if (!children[i].Enter(_t, _u))
+                if (!children[i].Enter(_t, _u, _v))
                 {
                     return false;
                 }
@@ -17,11 +15,11 @@ namespace bt
             return true;
         }
 
-        public override bool TryEnter(T _t, U _u, ref ActionNode<T, U> _actionNode)
+        public override bool TryEnter(T _t, U _u, V _v, ref ActionNode<T, U, V> _actionNode)
         {
             for (int i = 0; i < children.Count; i++)
             {
-                if (!children[i].TryEnter(_t, _u, ref _actionNode))
+                if (!children[i].TryEnter(_t, _u, _v, ref _actionNode))
                 {
                     return false;
                 }

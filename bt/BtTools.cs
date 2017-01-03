@@ -18,7 +18,7 @@ namespace bt
 
         public const string RANDOM_VALUE = "randomValue";
 
-        public static BtRoot<T, U> Create<T, U>(string _str, Func<XmlNode, ConditionNode<T, U>> _conditionNodeCallBack, Func<XmlNode, ActionNode<T, U>> _actionNodeCallBack, Random _random)
+        public static BtRoot<T, U, V> Create<T, U, V>(string _str, Func<XmlNode, ConditionNode<T, U, V>> _conditionNodeCallBack, Func<XmlNode, ActionNode<T, U, V>> _actionNodeCallBack, Random _random) where V : new()
         {
             XmlDocument xmlDoc = new XmlDocument();
 
@@ -31,18 +31,18 @@ namespace bt
 
             xmlDoc.LoadXml(xmlStr);
 
-            INode<T, U> rootNode = ParseNode(xmlDoc.DocumentElement, _conditionNodeCallBack, _actionNodeCallBack, _random);
+            INode<T, U, V> rootNode = ParseNode(xmlDoc.DocumentElement, _conditionNodeCallBack, _actionNodeCallBack, _random);
 
-            BtRoot<T, U> result = new BtRoot<T, U>();
+            BtRoot<T, U, V> result = new BtRoot<T, U, V>();
 
             result.Init(rootNode);
 
             return result;
         }
 
-        private static INode<T, U> ParseNode<T, U>(XmlNode _node, Func<XmlNode, ConditionNode<T, U>> _conditionNodeCallBack, Func<XmlNode, ActionNode<T, U>> _actionNodeCallBack, Random _random)
+        private static INode<T, U, V> ParseNode<T, U, V>(XmlNode _node, Func<XmlNode, ConditionNode<T, U, V>> _conditionNodeCallBack, Func<XmlNode, ActionNode<T, U, V>> _actionNodeCallBack, Random _random) where V : new()
         {
-            INode<T, U> node;
+            INode<T, U, V> node;
 
             bool isCompositeNode;
 
@@ -52,7 +52,7 @@ namespace bt
             {
                 case SELECT:
 
-                    node = new SelectNode<T, U>();
+                    node = new SelectNode<T, U, V>();
 
                     isCompositeNode = true;
 
@@ -62,7 +62,7 @@ namespace bt
 
                 case SEQUENCE:
 
-                    node = new SequenceNode<T, U>();
+                    node = new SequenceNode<T, U, V>();
 
                     isCompositeNode = true;
 
@@ -72,7 +72,7 @@ namespace bt
 
                 case RANDOM:
 
-                    node = new RandomNode<T, U>();
+                    node = new RandomNode<T, U, V>();
 
                     isCompositeNode = true;
 
@@ -109,7 +109,7 @@ namespace bt
             {
                 if (_node.HasChildNodes)
                 {
-                    List<INode<T, U>> nodeList = new List<INode<T, U>>();
+                    List<INode<T, U, V>> nodeList = new List<INode<T, U, V>>();
 
                     List<int> randomList = null;
 
@@ -124,7 +124,7 @@ namespace bt
                     {
                         if (child.NodeType == XmlNodeType.Element)
                         {
-                            INode<T, U> childNode = ParseNode(child, _conditionNodeCallBack, _actionNodeCallBack, _random);
+                            INode<T, U, V> childNode = ParseNode(child, _conditionNodeCallBack, _actionNodeCallBack, _random);
 
                             nodeList.Add(childNode);
 
@@ -142,11 +142,11 @@ namespace bt
                         }
                     }
 
-                    (node as CompositeNode<T, U>).Init(nodeList);
+                    (node as CompositeNode<T, U, V>).Init(nodeList);
 
                     if (isRandomNode)
                     {
-                        (node as RandomNode<T, U>).InitRandomValue(_random, randomList);
+                        (node as RandomNode<T, U, V>).InitRandomValue(_random, randomList);
                     }
                 }
                 else
