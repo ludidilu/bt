@@ -105,53 +105,46 @@ namespace bt
                     throw new Exception("node type error:" + _node.Name);
             }
 
-            if (isCompositeNode)
+            if (isCompositeNode && _node.HasChildNodes)
             {
-                if (_node.HasChildNodes)
+                List<INode<T, U, V>> nodeList = new List<INode<T, U, V>>();
+
+                List<int> randomList = null;
+
+                if (isRandomNode)
                 {
-                    List<INode<T, U, V>> nodeList = new List<INode<T, U, V>>();
+                    randomList = new List<int>();
+                }
 
-                    List<int> randomList = null;
+                XmlNodeList children = _node.ChildNodes;
 
-                    if (isRandomNode)
+                foreach (XmlNode child in children)
+                {
+                    if (child.NodeType == XmlNodeType.Element)
                     {
-                        randomList = new List<int>();
-                    }
+                        INode<T, U, V> childNode = ParseNode(child, _conditionNodeCallBack, _actionNodeCallBack, _random);
 
-                    XmlNodeList children = _node.ChildNodes;
+                        nodeList.Add(childNode);
 
-                    foreach (XmlNode child in children)
-                    {
-                        if (child.NodeType == XmlNodeType.Element)
+                        if (isRandomNode)
                         {
-                            INode<T, U, V> childNode = ParseNode(child, _conditionNodeCallBack, _actionNodeCallBack, _random);
+                            XmlAttribute att = child.Attributes[RANDOM_VALUE];
 
-                            nodeList.Add(childNode);
-
-                            if (isRandomNode)
+                            if (att == null)
                             {
-                                XmlAttribute att = child.Attributes[RANDOM_VALUE];
-
-                                if (att == null)
-                                {
-                                    throw new Exception("randomValue att can not be found!");
-                                }
-
-                                randomList.Add(int.Parse(att.InnerXml));
+                                throw new Exception("randomValue att can not be found!");
                             }
+
+                            randomList.Add(int.Parse(att.InnerXml));
                         }
                     }
-
-                    (node as CompositeNode<T, U, V>).Init(nodeList);
-
-                    if (isRandomNode)
-                    {
-                        (node as RandomNode<T, U, V>).InitRandomValue(_random, randomList);
-                    }
                 }
-                else
+
+                (node as CompositeNode<T, U, V>).Init(nodeList);
+
+                if (isRandomNode)
                 {
-                    throw new Exception("CompositeNode has no child!");
+                    (node as RandomNode<T, U, V>).InitRandomValue(_random, randomList);
                 }
             }
 
