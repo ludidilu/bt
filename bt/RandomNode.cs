@@ -28,16 +28,19 @@ namespace bt
 
                 if (children[i].TryEnter(_t, _u, _v, ref actionNode))
                 {
-                    if (actionList == null)
+                    if (actionNode != null)
                     {
-                        actionList = new List<ActionNode<T, U, V>>();
+                        if (actionList == null)
+                        {
+                            actionList = new List<ActionNode<T, U, V>>();
 
-                        valueList = new List<int>();
+                            valueList = new List<int>();
+                        }
+
+                        actionList.Add(actionNode);
+
+                        valueList.Add(randomValue[i]);
                     }
-
-                    actionList.Add(actionNode);
-
-                    valueList.Add(randomValue[i]);
                 }
             }
 
@@ -88,16 +91,19 @@ namespace bt
 
                 if (children[i].TryEnter(_t, _u, _v, ref actionNode))
                 {
-                    if (actionList == null)
+                    if (actionNode != null)
                     {
-                        actionList = new List<ActionNode<T, U, V>>();
+                        if (actionList == null)
+                        {
+                            actionList = new List<ActionNode<T, U, V>>();
 
-                        valueList = new List<int>();
+                            valueList = new List<int>();
+                        }
+
+                        actionList.Add(actionNode);
+
+                        valueList.Add(randomValue[i]);
                     }
-
-                    actionList.Add(actionNode);
-
-                    valueList.Add(randomValue[i]);
                 }
             }
 
