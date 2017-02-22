@@ -2,7 +2,7 @@
 
 namespace bt
 {
-    public class CompositeNode<T, U, V> : INode<T, U, V> where V : new()
+    public class CompositeNode<T, U, V> : INode<T, U, V>
     {
         protected List<INode<T, U, V>> children;
 

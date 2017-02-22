@@ -1,6 +1,6 @@
 ﻿namespace bt
 {
-    public class SequenceNode<T, U, V> : CompositeNode<T, U, V> where V : new()
+    public class SequenceNode<T, U, V> : CompositeNode<T, U, V>
     {
         public override bool Enter(T _t, U _u, V _v)
         {

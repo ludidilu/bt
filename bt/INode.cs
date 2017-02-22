@@ -1,6 +1,6 @@
 ﻿namespace bt
 {
-    public interface INode<T, U, V> where V : new()
+    public interface INode<T, U, V>
     {
         bool Enter(T _t, U _u, V _v);
 

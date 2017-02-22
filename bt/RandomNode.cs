@@ -3,13 +3,13 @@ using System;
 
 namespace bt
 {
-    public class RandomNode<T, U, V> : CompositeNode<T, U, V> where V : new()
+    public class RandomNode<T, U, V> : CompositeNode<T, U, V>
     {
         private Random random;
 
         private List<int> randomValue;
 
-        public void InitRandomValue(Random _random, List<int> _randomValue)
+        internal void InitRandomValue(Random _random, List<int> _randomValue)
         {
             random = _random;
 

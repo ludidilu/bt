@@ -1,6 +1,6 @@
 ﻿namespace bt
 {
-    public class BtRoot<T, U, V> where V : new()
+    public class BtRoot<T, U, V> where V : class, new()
     {
         private INode<T, U, V> rootNode;
 
