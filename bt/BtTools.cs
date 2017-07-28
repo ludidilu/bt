@@ -132,7 +132,7 @@ namespace bt
 
                             if (att == null)
                             {
-                                throw new Exception("randomValue att can not be found!");
+                                throw new Exception(RANDOM_VALUE + " att can not be found!");
                             }
 
                             randomList.Add(int.Parse(att.InnerXml));
