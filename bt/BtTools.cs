@@ -18,7 +18,7 @@ namespace bt
 
         public const string RANDOM_VALUE = "randomValue";
 
-        public static BtRoot<T, U, V> Create<T, U, V>(string _str, Func<XmlNode, ConditionNode<T, U, V>> _conditionNodeCallBack, Func<XmlNode, ActionNode<T, U, V>> _actionNodeCallBack, Func<int, int> _getRandomValueCallBack) where V : class, new()
+        public static BtRoot<T, U, V> Create<T, U, V>(string _str, Func<XmlNode, ConditionNode<T, U, V>> _conditionNodeCallBack, Func<XmlNode, ActionNode<T, U, V>> _actionNodeCallBack, Func<int, int> _getRandomValueCallBack)
         {
             XmlDocument xmlDoc = new XmlDocument();
 
