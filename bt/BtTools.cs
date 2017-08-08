@@ -18,7 +18,7 @@ namespace bt
 
         public const string RANDOM_VALUE = "randomValue";
 
-        public static BtRoot<T, U, V> Create<T, U, V>(string _str, Func<XmlNode, ConditionNode<T, U, V>> _conditionNodeCallBack, Func<XmlNode, ActionNode<T, U, V>> _actionNodeCallBack, Random _random) where V : class, new()
+        public static BtRoot<T, U, V> Create<T, U, V>(string _str, Func<XmlNode, ConditionNode<T, U, V>> _conditionNodeCallBack, Func<XmlNode, ActionNode<T, U, V>> _actionNodeCallBack, Func<int, int> _getRandomValueCallBack) where V : class, new()
         {
             XmlDocument xmlDoc = new XmlDocument();
 
@@ -31,7 +31,7 @@ namespace bt
 
             xmlDoc.LoadXml(xmlStr);
 
-            INode<T, U, V> rootNode = ParseNode(xmlDoc.DocumentElement, _conditionNodeCallBack, _actionNodeCallBack, _random);
+            INode<T, U, V> rootNode = ParseNode(xmlDoc.DocumentElement, _conditionNodeCallBack, _actionNodeCallBack, _getRandomValueCallBack);
 
             BtRoot<T, U, V> result = new BtRoot<T, U, V>();
 
@@ -40,7 +40,7 @@ namespace bt
             return result;
         }
 
-        private static INode<T, U, V> ParseNode<T, U, V>(XmlNode _node, Func<XmlNode, ConditionNode<T, U, V>> _conditionNodeCallBack, Func<XmlNode, ActionNode<T, U, V>> _actionNodeCallBack, Random _random)
+        private static INode<T, U, V> ParseNode<T, U, V>(XmlNode _node, Func<XmlNode, ConditionNode<T, U, V>> _conditionNodeCallBack, Func<XmlNode, ActionNode<T, U, V>> _actionNodeCallBack, Func<int, int> _getRandomValueCallBack)
         {
             INode<T, U, V> node;
 
@@ -122,7 +122,7 @@ namespace bt
                 {
                     if (child.NodeType == XmlNodeType.Element)
                     {
-                        INode<T, U, V> childNode = ParseNode(child, _conditionNodeCallBack, _actionNodeCallBack, _random);
+                        INode<T, U, V> childNode = ParseNode(child, _conditionNodeCallBack, _actionNodeCallBack, _getRandomValueCallBack);
 
                         nodeList.Add(childNode);
 
@@ -144,7 +144,7 @@ namespace bt
 
                 if (isRandomNode)
                 {
-                    (node as RandomNode<T, U, V>).InitRandomValue(_random, randomList);
+                    (node as RandomNode<T, U, V>).InitRandomValue(_getRandomValueCallBack, randomList);
                 }
             }
 

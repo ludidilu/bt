@@ -5,13 +5,13 @@ namespace bt
 {
     public class RandomNode<T, U, V> : CompositeNode<T, U, V>
     {
-        private Random random;
+        private Func<int, int> getRandomValueCallBack;
 
         private List<int> randomValue;
 
-        internal void InitRandomValue(Random _random, List<int> _randomValue)
+        internal void InitRandomValue(Func<int, int> _getRandomValueCallBack, List<int> _randomValue)
         {
-            random = _random;
+            getRandomValueCallBack = _getRandomValueCallBack;
 
             randomValue = _randomValue;
         }
@@ -53,7 +53,7 @@ namespace bt
                     d += valueList[i];
                 }
 
-                int value = random.Next(d);
+                int value = getRandomValueCallBack(d);
 
                 for (int i = 0; i < valueList.Count; i++)
                 {
@@ -116,7 +116,7 @@ namespace bt
                     d += valueList[i];
                 }
 
-                int value = random.Next(d);
+                int value = getRandomValueCallBack(d);
 
                 for (int i = 0; i < valueList.Count; i++)
                 {
