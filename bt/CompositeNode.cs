@@ -7,7 +7,7 @@ namespace bt
     {
         protected List<INode<T, U, V>> children;
 
-        protected bool loop;
+        private bool loop;
 
         internal void Init(List<INode<T, U, V>> _children, bool _loop)
         {
