@@ -3,7 +3,7 @@ using System;
 
 namespace bt
 {
-    public class RandomNode<T, U, V> : CompositeNode<T, U, V>
+    internal class RandomNode<T, U, V> : CompositeNode<T, U, V>, INode<T, U, V>
     {
         private Func<int, int> getRandomValueCallBack;
 
@@ -16,7 +16,7 @@ namespace bt
             randomValue = _randomValue;
         }
 
-        public override bool Enter(T _t, U _u, V _v)
+        bool INode<T, U, V>.Enter(T _t, U _u, V _v)
         {
             List<ActionNode<T, U, V>> actionList = null;
 
@@ -79,7 +79,7 @@ namespace bt
             }
         }
 
-        public override bool TryEnter(T _t, U _u, V _v, ref ActionNode<T, U, V> _actionNode)
+        bool INode<T, U, V>.TryEnter(T _t, U _u, V _v, ref ActionNode<T, U, V> _actionNode)
         {
             List<ActionNode<T, U, V>> actionList = null;
 

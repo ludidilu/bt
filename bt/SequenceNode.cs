@@ -1,8 +1,8 @@
 ﻿namespace bt
 {
-    public class SequenceNode<T, U, V> : CompositeNode<T, U, V>
+    internal class SequenceNode<T, U, V> : CompositeNode<T, U, V>, INode<T, U, V>
     {
-        public override bool Enter(T _t, U _u, V _v)
+        bool INode<T, U, V>.Enter(T _t, U _u, V _v)
         {
             for (int i = 0; i < children.Count; i++)
             {
@@ -15,7 +15,7 @@
             return true;
         }
 
-        public override bool TryEnter(T _t, U _u, V _v, ref ActionNode<T, U, V> _actionNode)
+        bool INode<T, U, V>.TryEnter(T _t, U _u, V _v, ref ActionNode<T, U, V> _actionNode)
         {
             for (int i = 0; i < children.Count; i++)
             {
