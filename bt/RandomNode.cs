@@ -9,6 +9,10 @@ namespace bt
 
         private List<int> randomValue;
 
+        private List<ActionNode<T, U, V>> actionList = new List<ActionNode<T, U, V>>();
+
+        private List<int> randomValueList = new List<int>();
+
         internal void InitRandomValue(Func<int, int> _getRandomValueCallBack, List<int> _randomValue)
         {
             getRandomValueCallBack = _getRandomValueCallBack;
@@ -16,12 +20,8 @@ namespace bt
             randomValue = _randomValue;
         }
 
-        bool INode<T, U, V>.Enter(T _t, U _u, V _v)
+        protected override bool EnterReal(T _t, U _u, V _v)
         {
-            List<ActionNode<T, U, V>> actionList = null;
-
-            List<int> valueList = null;
-
             for (int i = 0; i < children.Count; i++)
             {
                 ActionNode<T, U, V> actionNode = null;
@@ -30,34 +30,27 @@ namespace bt
                 {
                     if (actionNode != null)
                     {
-                        if (actionList == null)
-                        {
-                            actionList = new List<ActionNode<T, U, V>>();
-
-                            valueList = new List<int>();
-                        }
-
                         actionList.Add(actionNode);
 
-                        valueList.Add(randomValue[i]);
+                        randomValueList.Add(randomValue[i]);
                     }
                 }
             }
 
-            if (actionList != null)
+            if (actionList.Count > 0)
             {
                 int d = 0;
 
-                for (int i = 0; i < valueList.Count; i++)
+                for (int i = 0; i < randomValueList.Count; i++)
                 {
-                    d += valueList[i];
+                    d += randomValueList[i];
                 }
 
                 int value = getRandomValueCallBack(d);
 
-                for (int i = 0; i < valueList.Count; i++)
+                for (int i = 0; i < randomValueList.Count; i++)
                 {
-                    int v = valueList[i];
+                    int v = randomValueList[i];
 
                     if (value < v)
                     {
@@ -71,6 +64,10 @@ namespace bt
                     }
                 }
 
+                actionList.Clear();
+
+                randomValueList.Clear();
+
                 return true;
             }
             else
@@ -81,10 +78,6 @@ namespace bt
 
         bool INode<T, U, V>.TryEnter(T _t, U _u, V _v, ref ActionNode<T, U, V> _actionNode)
         {
-            List<ActionNode<T, U, V>> actionList = null;
-
-            List<int> valueList = null;
-
             for (int i = 0; i < children.Count; i++)
             {
                 ActionNode<T, U, V> actionNode = null;
@@ -93,34 +86,27 @@ namespace bt
                 {
                     if (actionNode != null)
                     {
-                        if (actionList == null)
-                        {
-                            actionList = new List<ActionNode<T, U, V>>();
-
-                            valueList = new List<int>();
-                        }
-
                         actionList.Add(actionNode);
 
-                        valueList.Add(randomValue[i]);
+                        randomValueList.Add(randomValue[i]);
                     }
                 }
             }
 
-            if (actionList != null)
+            if (actionList.Count > 0)
             {
                 int d = 0;
 
-                for (int i = 0; i < valueList.Count; i++)
+                for (int i = 0; i < randomValueList.Count; i++)
                 {
-                    d += valueList[i];
+                    d += randomValueList[i];
                 }
 
                 int value = getRandomValueCallBack(d);
 
-                for (int i = 0; i < valueList.Count; i++)
+                for (int i = 0; i < randomValueList.Count; i++)
                 {
-                    int v = valueList[i];
+                    int v = randomValueList[i];
 
                     if (value < v)
                     {
@@ -133,6 +119,10 @@ namespace bt
                         value -= v;
                     }
                 }
+
+                actionList.Clear();
+
+                randomValueList.Clear();
 
                 return true;
             }

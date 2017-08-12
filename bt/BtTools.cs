@@ -18,6 +18,8 @@ namespace bt
 
         public const string RANDOM_VALUE = "randomValue";
 
+        public const string LOOP = "loop";
+
         public static BtRoot<T, U, V> Create<T, U, V>(string _str, Func<XmlNode, ConditionNode<T, U, V>> _conditionNodeCallBack, Func<XmlNode, ActionNode<T, U, V>> _actionNodeCallBack, Func<int, int> _getRandomValueCallBack)
         {
             XmlDocument xmlDoc = new XmlDocument();
@@ -44,9 +46,9 @@ namespace bt
         {
             INode<T, U, V> node;
 
-            bool isCompositeNode;
+            bool isCompositeNode = false;
 
-            bool isRandomNode;
+            bool isRandomNode = false;
 
             switch (_node.Name)
             {
@@ -56,8 +58,6 @@ namespace bt
 
                     isCompositeNode = true;
 
-                    isRandomNode = false;
-
                     break;
 
                 case SEQUENCE:
@@ -65,8 +65,6 @@ namespace bt
                     node = new SequenceNode<T, U, V>();
 
                     isCompositeNode = true;
-
-                    isRandomNode = false;
 
                     break;
 
@@ -84,19 +82,11 @@ namespace bt
 
                     node = _conditionNodeCallBack(_node);
 
-                    isCompositeNode = false;
-
-                    isRandomNode = false;
-
                     break;
 
                 case ACTION:
 
                     node = _actionNodeCallBack(_node);
-
-                    isCompositeNode = false;
-
-                    isRandomNode = false;
 
                     break;
 
@@ -140,7 +130,11 @@ namespace bt
                     }
                 }
 
-                (node as CompositeNode<T, U, V>).Init(nodeList);
+                XmlAttribute loopAtt = _node.Attributes[LOOP];
+
+                bool isLoop = loopAtt != null && bool.Parse(loopAtt.InnerText);
+
+                (node as CompositeNode<T, U, V>).Init(nodeList, isLoop);
 
                 if (isRandomNode)
                 {
