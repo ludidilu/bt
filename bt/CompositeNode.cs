@@ -16,13 +16,13 @@ namespace bt
             loop = _loop;
         }
 
-        bool INode<T, U, V>.Enter(T _t, U _u, V _v)
+        bool INode<T, U, V>.Enter(Func<int, int> _getRandomValueCallBack, T _t, U _u, V _v)
         {
             if (loop)
             {
                 bool result = false;
 
-                while (EnterReal(_t, _u, _v))
+                while (EnterReal(_getRandomValueCallBack, _t, _u, _v))
                 {
                     result = true;
                 }
@@ -31,16 +31,16 @@ namespace bt
             }
             else
             {
-                return EnterReal(_t, _u, _v);
+                return EnterReal(_getRandomValueCallBack, _t, _u, _v);
             }
         }
 
-        protected virtual bool EnterReal(T _t, U _u, V _v)
+        protected virtual bool EnterReal(Func<int, int> _getRandomValueCallBack, T _t, U _u, V _v)
         {
             throw new NotImplementedException();
         }
 
-        bool INode<T, U, V>.TryEnter(T _t, U _u, V _v, ref ActionNode<T, U, V> _actionNode)
+        bool INode<T, U, V>.TryEnter(Func<int, int> _getRandomValueCallBack, T _t, U _u, V _v, ref ActionNode<T, U, V> _actionNode)
         {
             throw new NotImplementedException();
         }

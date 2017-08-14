@@ -20,7 +20,7 @@ namespace bt
 
         public const string LOOP = "loop";
 
-        public static BtRoot<T, U, V> Create<T, U, V>(string _str, Func<XmlNode, ConditionNode<T, U, V>> _conditionNodeCallBack, Func<XmlNode, ActionNode<T, U, V>> _actionNodeCallBack, Func<int, int> _getRandomValueCallBack)
+        public static BtRoot<T, U, V> Create<T, U, V>(string _str, Func<XmlNode, ConditionNode<T, U, V>> _conditionNodeCallBack, Func<XmlNode, ActionNode<T, U, V>> _actionNodeCallBack)
         {
             XmlDocument xmlDoc = new XmlDocument();
 
@@ -33,7 +33,7 @@ namespace bt
 
             xmlDoc.LoadXml(xmlStr);
 
-            INode<T, U, V> rootNode = ParseNode(xmlDoc.DocumentElement, _conditionNodeCallBack, _actionNodeCallBack, _getRandomValueCallBack);
+            INode<T, U, V> rootNode = ParseNode(xmlDoc.DocumentElement, _conditionNodeCallBack, _actionNodeCallBack);
 
             BtRoot<T, U, V> result = new BtRoot<T, U, V>();
 
@@ -42,7 +42,7 @@ namespace bt
             return result;
         }
 
-        private static INode<T, U, V> ParseNode<T, U, V>(XmlNode _node, Func<XmlNode, ConditionNode<T, U, V>> _conditionNodeCallBack, Func<XmlNode, ActionNode<T, U, V>> _actionNodeCallBack, Func<int, int> _getRandomValueCallBack)
+        private static INode<T, U, V> ParseNode<T, U, V>(XmlNode _node, Func<XmlNode, ConditionNode<T, U, V>> _conditionNodeCallBack, Func<XmlNode, ActionNode<T, U, V>> _actionNodeCallBack)
         {
             INode<T, U, V> node;
 
@@ -112,7 +112,7 @@ namespace bt
                 {
                     if (child.NodeType == XmlNodeType.Element)
                     {
-                        INode<T, U, V> childNode = ParseNode(child, _conditionNodeCallBack, _actionNodeCallBack, _getRandomValueCallBack);
+                        INode<T, U, V> childNode = ParseNode(child, _conditionNodeCallBack, _actionNodeCallBack);
 
                         nodeList.Add(childNode);
 
@@ -138,7 +138,7 @@ namespace bt
 
                 if (isRandomNode)
                 {
-                    (node as RandomNode<T, U, V>).InitRandomValue(_getRandomValueCallBack, randomList);
+                    (node as RandomNode<T, U, V>).InitRandomValue(randomList);
                 }
             }
 

@@ -1,4 +1,6 @@
-﻿namespace bt
+﻿using System;
+
+namespace bt
 {
     public class BtRoot<T, U, V>
     {
@@ -9,9 +11,9 @@
             rootNode = _rootNode;
         }
 
-        public void Enter(T _t, U _u, V _v)
+        public void Enter(Func<int, int> _getRandomValueCallBack, T _t, U _u, V _v)
         {
-            rootNode.Enter(_t, _u, _v);
+            rootNode.Enter(_getRandomValueCallBack, _t, _u, _v);
         }
     }
 }

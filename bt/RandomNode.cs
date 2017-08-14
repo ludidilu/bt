@@ -5,28 +5,24 @@ namespace bt
 {
     internal class RandomNode<T, U, V> : CompositeNode<T, U, V>, INode<T, U, V>
     {
-        private Func<int, int> getRandomValueCallBack;
-
         private List<int> randomValue;
 
         private List<ActionNode<T, U, V>> actionList = new List<ActionNode<T, U, V>>();
 
         private List<int> randomValueList = new List<int>();
 
-        internal void InitRandomValue(Func<int, int> _getRandomValueCallBack, List<int> _randomValue)
+        internal void InitRandomValue(List<int> _randomValue)
         {
-            getRandomValueCallBack = _getRandomValueCallBack;
-
             randomValue = _randomValue;
         }
 
-        protected override bool EnterReal(T _t, U _u, V _v)
+        protected override bool EnterReal(Func<int, int> _getRandomValueCallBack, T _t, U _u, V _v)
         {
             for (int i = 0; i < children.Count; i++)
             {
                 ActionNode<T, U, V> actionNode = null;
 
-                if (children[i].TryEnter(_t, _u, _v, ref actionNode))
+                if (children[i].TryEnter(_getRandomValueCallBack, _t, _u, _v, ref actionNode))
                 {
                     if (actionNode != null)
                     {
@@ -46,7 +42,7 @@ namespace bt
                     d += randomValueList[i];
                 }
 
-                int value = getRandomValueCallBack(d);
+                int value = _getRandomValueCallBack(d);
 
                 for (int i = 0; i < randomValueList.Count; i++)
                 {
@@ -54,7 +50,7 @@ namespace bt
 
                     if (value < v)
                     {
-                        actionList[i].Enter(_t, _u, _v);
+                        actionList[i].Enter(_getRandomValueCallBack, _t, _u, _v);
 
                         break;
                     }
@@ -76,13 +72,13 @@ namespace bt
             }
         }
 
-        bool INode<T, U, V>.TryEnter(T _t, U _u, V _v, ref ActionNode<T, U, V> _actionNode)
+        bool INode<T, U, V>.TryEnter(Func<int, int> _getRandomValueCallBack, T _t, U _u, V _v, ref ActionNode<T, U, V> _actionNode)
         {
             for (int i = 0; i < children.Count; i++)
             {
                 ActionNode<T, U, V> actionNode = null;
 
-                if (children[i].TryEnter(_t, _u, _v, ref actionNode))
+                if (children[i].TryEnter(_getRandomValueCallBack, _t, _u, _v, ref actionNode))
                 {
                     if (actionNode != null)
                     {
@@ -102,7 +98,7 @@ namespace bt
                     d += randomValueList[i];
                 }
 
-                int value = getRandomValueCallBack(d);
+                int value = _getRandomValueCallBack(d);
 
                 for (int i = 0; i < randomValueList.Count; i++)
                 {
