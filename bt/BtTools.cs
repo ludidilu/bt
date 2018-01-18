@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Xml;
 using System.Collections.Generic;
+using System.Reflection;
+using System.Runtime.Remoting;
+using System.Collections;
 
 namespace bt
 {
@@ -20,7 +23,7 @@ namespace bt
 
         public const string LOOP = "loop";
 
-        public static BtRoot<T, U, V> Create<T, U, V>(string _str, Func<XmlNode, ConditionNode<T, U, V>> _conditionNodeCallBack, Func<XmlNode, ActionNode<T, U, V>> _actionNodeCallBack)
+        public static BtRoot<T, U, V> Create<T, U, V>(string _str, string _assemblyName)
         {
             XmlDocument xmlDoc = new XmlDocument();
 
@@ -33,7 +36,7 @@ namespace bt
 
             xmlDoc.LoadXml(xmlStr);
 
-            INode<T, U, V> rootNode = ParseNode(xmlDoc.DocumentElement, _conditionNodeCallBack, _actionNodeCallBack);
+            INode<T, U, V> rootNode = ParseNode<T, U, V>(xmlDoc.DocumentElement, _assemblyName);
 
             BtRoot<T, U, V> result = new BtRoot<T, U, V>();
 
@@ -42,7 +45,7 @@ namespace bt
             return result;
         }
 
-        private static INode<T, U, V> ParseNode<T, U, V>(XmlNode _node, Func<XmlNode, ConditionNode<T, U, V>> _conditionNodeCallBack, Func<XmlNode, ActionNode<T, U, V>> _actionNodeCallBack)
+        private static INode<T, U, V> ParseNode<T, U, V>(XmlNode _node, string _assemblyName)
         {
             INode<T, U, V> node;
 
@@ -80,13 +83,13 @@ namespace bt
 
                 case CONDITION:
 
-                    node = _conditionNodeCallBack(_node);
+                    node = GetNode<T, U, V>(_node, _assemblyName);
 
                     break;
 
                 case ACTION:
 
-                    node = _actionNodeCallBack(_node);
+                    node = GetNode<T, U, V>(_node, _assemblyName);
 
                     break;
 
@@ -112,7 +115,7 @@ namespace bt
                 {
                     if (child.NodeType == XmlNodeType.Element)
                     {
-                        INode<T, U, V> childNode = ParseNode(child, _conditionNodeCallBack, _actionNodeCallBack);
+                        INode<T, U, V> childNode = ParseNode<T, U, V>(child, _assemblyName);
 
                         nodeList.Add(childNode);
 
@@ -143,6 +146,80 @@ namespace bt
             }
 
             return node;
+        }
+
+        private static INode<T, U, V> GetNode<T, U, V>(XmlNode _node, string _assemblyName)
+        {
+            XmlAttribute typeAtt = _node.Attributes["type"];
+
+            ObjectHandle oh = Activator.CreateInstance(_assemblyName, typeAtt.InnerText);
+
+            INode<T, U, V> actionNode = oh.Unwrap() as INode<T, U, V>;
+
+            IEnumerator ie = _node.Attributes.GetEnumerator();
+
+            while (ie.MoveNext())
+            {
+                XmlAttribute xa = ie.Current as XmlAttribute;
+
+                if (xa.Name != "type")
+                {
+                    FieldInfo fi = actionNode.GetType().GetField(xa.Name, BindingFlags.NonPublic | BindingFlags.Instance);
+
+                    if (fi != null)
+                    {
+                        SetData(fi, actionNode, xa.Value);
+                    }
+                }
+            }
+
+            return actionNode;
+        }
+
+        private static void SetData<T, U, V>(FieldInfo _info, INode<T, U, V> _obj, string _data)
+        {
+            switch (_info.FieldType.Name)
+            {
+                case "Int32":
+
+                    _info.SetValue(_obj, int.Parse(_data));
+
+                    break;
+
+                case "String":
+
+                    _info.SetValue(_obj, _data);
+
+                    break;
+
+                case "Boolean":
+
+                    _info.SetValue(_obj, _data == "1" ? true : false);
+
+                    break;
+
+                case "Single":
+
+                    _info.SetValue(_obj, float.Parse(_data));
+
+                    break;
+
+                case "Double":
+
+                    _info.SetValue(_obj, double.Parse(_data));
+
+                    break;
+
+                case "Int16":
+
+                    _info.SetValue(_obj, short.Parse(_data));
+
+                    break;
+
+                default:
+
+                    throw new Exception("Node的属性不支持反射  setData:" + _info.Name + "   " + _info.FieldType.Name + "   " + _data);
+            }
         }
 
         private static string XmlFix(string _str)

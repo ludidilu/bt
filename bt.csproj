@@ -64,6 +64,7 @@
     <Compile Include="bt\RandomNode.cs" />
     <Compile Include="bt\SelectNode.cs" />
     <Compile Include="bt\SequenceNode.cs" />
+    <Compile Include="log\Log.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
